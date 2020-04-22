@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2001C439-FF25-4770-80AD-70D0A7ECC97F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Afx.Data</RootNamespace>
+    <AssemblyName>Afx.Data</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET20</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\publish\net20\</OutputPath>
+    <DefineConstants>TRACE;NET20</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\..\publish\net20\Afx.Data.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Afx.Base, Version=9.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Afx.Base.9.0.1\lib\net20\Afx.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\src\Afx.Data\Database.cs">
+      <Link>Database.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Database.model.cs">
+      <Link>Database.model.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\DbLikeType.cs">
+      <Link>DbLikeType.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\IDatabase.cs">
+      <Link>IDatabase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\IModelToParam.cs">
+      <Link>IModelToParam.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\IReaderToModel.cs">
+      <Link>IReaderToModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\ModelMaping.cs">
+      <Link>ModelMaping.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\ModelToParam.cs">
+      <Link>ModelToParam.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\MsSqlDatabase.cs">
+      <Link>MsSqlDatabase.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\ReaderToModel.cs">
+      <Link>ReaderToModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Assembly.cs">
+      <Link>Properties\Assembly.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
