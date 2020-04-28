@@ -7,12 +7,12 @@
     <owners>jerrylai</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Afx.Data</description>
-    <releaseNotes>Afx.Data</releaseNotes>
-    <copyright>Copyright © mycsv 2018</copyright>
+    <projectUrl>https://github.com/jerrylai/Afx.Data</projectUrl>
+    <copyright>jerrylai@aliyun.com</copyright>
     <tags>Afx.Data Database</tags>
     <dependencies>
       <group targetFramework=".NETFramework2.0">
-        <dependency id="Afx.Base" version="10.0.0" exclude="Build,Analyzers" />
+        <dependency id="Afx.Base" version="10.0.0" />
       </group>
       <group targetFramework=".NETFramework4.0">
       </group>
