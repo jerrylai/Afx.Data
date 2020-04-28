@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>Afx.Data for .NET Standard 2.0</Description>
     <PackageReleaseNotes>Afx.Data for .NET Standard 2.0</PackageReleaseNotes>
-    <Version>9.0.1</Version>
+    <Version>9.0.2</Version>
     <Authors>jerrylai@aliyun.com</Authors>
     <Company>mycsv.cn</Company>
     <Copyright>Copyright © mycsv 2018</Copyright>

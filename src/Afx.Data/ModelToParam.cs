@@ -63,6 +63,7 @@ namespace Afx.Data
                             var parameter = command.CreateParameter();
                             parameter.ParameterName = pname;
                             parameter.Value = v ?? DBNull.Value;
+                            if (p.PropertyType.IsEnum) parameter.Value = (int)v;
                             DbType dbType;
                             if (ModelMaping.dbTypeDic.TryGetValue(p.PropertyType, out dbType))
                                 parameter.DbType = dbType;
@@ -128,8 +129,11 @@ namespace Afx.Data
                         var parameter = command.CreateParameter();
                         parameter.ParameterName = pname;
                         parameter.Value = kv.Value ?? DBNull.Value;
+                        Type kt = null;
+                        if (kv.Value != null) kt = kv.Value.GetType();
+                        if (kt != null && kt.IsEnum) parameter.Value = (int)kv.Value;
                         DbType dbType;
-                        if (kv.Value != null && ModelMaping.dbTypeDic.TryGetValue(kv.Value.GetType(), out dbType))
+                        if (kt != null && ModelMaping.dbTypeDic.TryGetValue(kt, out dbType))
                             parameter.DbType = dbType;
                         command.Parameters.Add(parameter);
                     }

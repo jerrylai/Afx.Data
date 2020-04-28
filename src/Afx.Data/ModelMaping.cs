@@ -204,8 +204,7 @@ namespace Afx.Data
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Call, typeof(ReaderToModel).GetMethod("SetOrdinal", new Type[] { typeof(IDataReader) }));
             var parr = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            bool isThrow = false;
-            PropertyInfo throwPropertyInfo = null;
+
             foreach (var p in parr)
             {
                 var setmethod = p.GetSetMethod();
@@ -293,8 +292,8 @@ namespace Afx.Data
                     }
                     else
                     {
-                        isThrow = true;
-                        if (throwPropertyInfo == null) throwPropertyInfo = p;
+                        //throw new InvalidCastException(t.FullName + "未找到属性" + p.Name + "的数据类型转换方法，请调用Afx.Data.DatabaseExtension.AddConvert添加数据类型转换方法。");
+
                         //il.Emit(OpCodes.Ldloc, localModel);
                         //il.Emit(OpCodes.Ldarg_1);
                         //il.Emit(OpCodes.Ldloc, locali);
@@ -318,8 +317,6 @@ namespace Afx.Data
 #else
             convertType = typeBuilder.CreateType();
 #endif
-
-            if (isThrow) throw new InvalidCastException(t.FullName + "未找到属性" + throwPropertyInfo.Name + "的数据类型转换方法，请调用Afx.Data.DatabaseExtension.AddConvert添加数据类型转换方法。");
 
             return convertType;
         }

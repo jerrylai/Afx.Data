@@ -438,9 +438,6 @@ namespace Afx.Data
                 {
                     foreach (IDataParameter p in command.Parameters)
                     {
-                        if (p.Value == null) p.Value = DBNull.Value;
-                        else if (p.Value.GetType().IsEnum) p.Value = (int)p.Value;
-                        command.Parameters.Add(p);
                         this.OnLog(string.Format("-- {0} = {1}", p.ParameterName, p.Value == DBNull.Value ? "null" : p.Value.ToString()));
                     }
                 }
