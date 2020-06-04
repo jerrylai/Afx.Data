@@ -14,7 +14,7 @@ namespace Afx.Data
     {
         const string ANONYMOUS_TYPE_NAME = "<>f__AnonymousType";
 
-
+        private volatile int tran_version = 0;
         private IDbTransaction transaction = null;
         private IDbConnection connection;
         private bool isOwnsConnection = true;
@@ -295,8 +295,10 @@ namespace Afx.Data
             if (null != this.transaction) throw new InvalidOperationException("事务已开启，不能重复开启！");
             if (this.connection.State != ConnectionState.Open) this.Open();
             this.transaction = this.Connection.BeginTransaction();
+            this.tran_version++;
             if (this.isLog) this.OnLog("-- BeginTransaction");
-            return this.transaction;
+            
+            return new TranRollback(this, this.tran_version);
         }
 
         /// <summary>
@@ -308,8 +310,10 @@ namespace Afx.Data
             if (null != this.transaction) throw new InvalidOperationException("已开启事务，不能重复开启！");
             if (this.connection.State != ConnectionState.Open) this.Open();
             this.transaction = this.Connection.BeginTransaction(isolationLevel);
+            this.tran_version++;
             if (this.isLog) this.OnLog("-- BeginTransaction " + isolationLevel.ToString());
-            return this.transaction;
+
+            return new TranRollback(this, this.tran_version);
         }
 
         /// <summary>
@@ -632,5 +636,24 @@ namespace Afx.Data
             }
         }
 
+        class TranRollback : IDisposable
+        {
+            private int tran_ver = 0;
+            private Database db;
+            public TranRollback(Database db, int tran_ver)
+            {
+                this.db = db;
+                this.tran_ver = tran_ver;
+            }
+
+            public void Dispose()
+            {
+                if(this.db != null && this.db.transaction != null && this.db.tran_version == this.tran_ver)
+                {
+                    this.db.Rollback();
+                }
+                this.db = null;
+            }
+        }
     }
 }
