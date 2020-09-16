@@ -261,6 +261,19 @@ namespace Afx.Data
                         il.Emit(OpCodes.Callvirt, typeof(ReaderToModel).GetMethod("GetChars", new Type[] { typeof(IDataReader), typeof(int) }));
                         il.Emit(OpCodes.Callvirt, setmethod);
                     }
+                    else if (convertDic.TryGetValue(pt, out call))
+                    {
+                        il.Emit(OpCodes.Ldloc, localModel);
+                        il.Emit(OpCodes.Ldarg_1);
+                        il.Emit(OpCodes.Ldloc, locali);
+                        il.Emit(OpCodes.Callvirt, typeof(IDataRecord).GetMethod("GetValue", new Type[] { typeof(int) }));
+                        il.Emit(OpCodes.Call, call);
+                        if (isNullable)
+                        {
+                            il.Emit(OpCodes.Newobj, typeof(Nullable<>).MakeGenericType(new Type[] { pt }).GetConstructor(new Type[] { pt }));
+                        }
+                        il.Emit(OpCodes.Callvirt, setmethod);
+                    }
                     else if (pt.IsEnum)
                     {
                         il.Emit(OpCodes.Ldloc, localModel);
@@ -271,19 +284,6 @@ namespace Afx.Data
                         il.Emit(OpCodes.Callvirt, typeof(IDataRecord).GetMethod("GetValue", new Type[] { typeof(int) }));
                         il.Emit(OpCodes.Call, typeof(Enum).GetMethod("ToObject", new Type[] { typeof(Type), typeof(object) }));
                         il.Emit(OpCodes.Unbox_Any, pt);
-                        if (isNullable)
-                        {
-                            il.Emit(OpCodes.Newobj, typeof(Nullable<>).MakeGenericType(new Type[] { pt }).GetConstructor(new Type[] { pt }));
-                        }
-                        il.Emit(OpCodes.Callvirt, setmethod);
-                    }
-                    else if (convertDic.TryGetValue(pt, out call))
-                    {
-                        il.Emit(OpCodes.Ldloc, localModel);
-                        il.Emit(OpCodes.Ldarg_1);
-                        il.Emit(OpCodes.Ldloc, locali);
-                        il.Emit(OpCodes.Callvirt, typeof(IDataRecord).GetMethod("GetValue", new Type[] { typeof(int) }));
-                        il.Emit(OpCodes.Call, call);
                         if (isNullable)
                         {
                             il.Emit(OpCodes.Newobj, typeof(Nullable<>).MakeGenericType(new Type[] { pt }).GetConstructor(new Type[] { pt }));
