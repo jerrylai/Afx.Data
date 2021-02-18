@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Afx.Data for .NET Standard 2.0</Description>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Description>Afx.Data for .NET Standard 2.1</Description>
     <PackageReleaseNotes>Afx.Data for .NET Standard 2.0</PackageReleaseNotes>
     <Version>10.1.0</Version>
     <Authors>jerrylai@aliyun.com</Authors>
     <Company>mycsv.cn</Company>
     <Copyright>Copyright © mycsv 2018</Copyright>
-    <Product>Afx.Data for .NET Standard 2.0</Product>
+    <Product>Afx.Data for .NET Standard 2.1</Product>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
