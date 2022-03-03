@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 
+#if !(NET20 || NET40)
+using System.Threading.Tasks;
+#endif
+
 namespace Afx.Data
 {
     /// <summary>
@@ -48,14 +52,14 @@ namespace Afx.Data
         Action<string> Log { get; set; }
 
         /// <summary>
-        ///  commit or SaveChanges 成功之后执行action list
-        /// </summary>
-        List<Action<IDatabase>> CommitCallbackList { get; }
-        /// <summary>
         /// 执行CommitCallback action 错误
         /// </summary>
         Action<Exception> CommitCallbackError { get; set; }
 
+        /// <summary>
+        ///  commit or SaveChanges 成功之后执行action list
+        /// </summary>
+        List<Action<IDatabase>> CommitCallbackList { get; }
         /// <summary>
         /// 添加 commit or SaveChanges 成功之后执行action
         /// action 只执行一次
@@ -70,6 +74,27 @@ namespace Afx.Data
         /// <param name="action">需要执行的action</param>
         /// <returns>移除成功返回true</returns>
         bool RemoveCommitCallback(Action<IDatabase> action);
+#if !(NET20 || NET40)
+        /// <summary>
+        ///  commit or SaveChanges 成功之后执行action list
+        /// </summary>
+        List<Func<IDatabase, Task>> CommitCallbackAsyncList { get; }
+        /// <summary>
+        /// 添加 commit or SaveChanges 成功之后执行action
+        /// action 只执行一次
+        /// </summary>
+        /// <param name="action">需要执行的action</param>
+        /// <returns>添加成功，返回所在的位置</returns>
+        int AddCommitCallback(Func<IDatabase, Task> action);
+
+        /// <summary>
+        /// 移除commit or SaveChanges 成功之后执行action
+        /// </summary>
+        /// <param name="action">需要执行的action</param>
+        /// <returns>移除成功返回true</returns>
+        bool RemoveCommitCallback(Func<IDatabase, Task> action);
+#endif
+
 
         /// <summary>
         /// 移除所有action
@@ -86,7 +111,7 @@ namespace Afx.Data
         /// </summary>
         void CloseKeepConnection();
 
-        #region
+#region
         /// <summary>
         /// 参数化查询名称加前缀
         /// </summary>
@@ -127,9 +152,9 @@ namespace Afx.Data
         /// <returns>DbParameter</returns>
         DbParameter CreateParameter(string name, object value);
 
-        #endregion
+#endregion
 
-        #region 事务
+#region 事务
         /// <summary>
         /// 是否开启事务
         /// </summary>
@@ -155,9 +180,9 @@ namespace Afx.Data
         /// 回滚事务
         /// </summary>
         void Rollback();
-        #endregion
+#endregion
 
-        #region common
+#region common
         /// <summary>
         /// 查询数据
         /// </summary>
@@ -186,10 +211,10 @@ namespace Afx.Data
         /// <param name="commandType"></param>
         /// <returns></returns>
         T ExecuteScalar<T>(string sql, object param = null, CommandType? commandType = null);
-        #endregion
+#endregion
 
 
-        #region Get
+#region Get
         /// <summary>
         /// 查询表数据
         /// </summary>
@@ -223,9 +248,9 @@ namespace Afx.Data
         /// <param name="whereParam">new { id=10, name= "1"}</param>
         /// <returns></returns>
         T Get<T>(string whereSql, object whereParam = null) where T : class, new();
-        #endregion
+#endregion
 
-        #region add
+#region add
 
         /// <summary>
         /// 添加数据
@@ -244,9 +269,9 @@ namespace Afx.Data
         /// <returns></returns>
         int Add(string table, object param);
 
-        #endregion
+#endregion
 
-        #region update
+#region update
 
         /// <summary>
         /// 更新数据
@@ -308,9 +333,9 @@ namespace Afx.Data
         /// <returns></returns>
         int Update<T>(string setSql, object setParam, string whereSql, object whereParam) where T : class;
 
-        #endregion
+#endregion
 
-        #region delete
+#region delete
 
         /// <summary>
         /// 删除数据
@@ -346,7 +371,7 @@ namespace Afx.Data
         /// <returns></returns>
         int Delete<T>(string whereSql, object whereParam) where T : class;
 
-        #endregion
+#endregion
 
 
 

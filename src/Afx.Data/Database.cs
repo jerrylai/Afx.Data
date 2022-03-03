@@ -5,6 +5,10 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 
+#if !(NET20 || NET40)
+using System.Threading.Tasks;
+#endif
+
 namespace Afx.Data
 {
     /// <summary>
@@ -19,7 +23,10 @@ namespace Afx.Data
         private IDbConnection connection;
         private bool isOwnsConnection = true;
         private volatile bool isOpenKeep = false;
-        private List<Action<IDatabase>> commitCallbackList = new List<Action<IDatabase>>(5);
+        private List<Action<IDatabase>> commitCallbackList;
+#if !(NET20 || NET40)
+        private List<Func<IDatabase, Task>> commitCallbackAsyncList;
+#endif
 
         /// <summary>
         /// 资源是否释放
@@ -72,11 +79,6 @@ namespace Afx.Data
             catch { }
         }
 
-        
-        /// <summary>
-        ///  commit or SaveChanges 成功之后执行action list
-        /// </summary>
-        public List<Action<IDatabase>> CommitCallbackList { get { return this.commitCallbackList; } }
         /// <summary>
         /// 执行CommitCallback action 错误
         /// </summary>
@@ -114,6 +116,68 @@ namespace Afx.Data
         }
 
         /// <summary>
+        ///  commit or SaveChanges 成功之后执行action list
+        /// </summary>
+        public List<Action<IDatabase>> CommitCallbackList { get { return this.commitCallbackList ?? new List<Action<IDatabase>>(0); } }
+#if !(NET20 || NET40)
+        /// <summary>
+        ///  commit or SaveChanges 成功之后执行action list
+        /// </summary>
+        public List<Func<IDatabase, Task>> CommitCallbackAsyncList { get { return this.commitCallbackAsyncList ?? new List<Func<IDatabase, Task>>(0); } }
+
+        /// <summary>
+        /// 添加 commit or SaveChanges 成功之后执行action
+        /// action 只执行一次
+        /// </summary>
+        /// <param name="action">需要执行的action</param>
+        /// <returns>添加成功，返回所在的位置</returns>
+        public virtual int AddCommitCallback(Func<IDatabase, Task> action)
+        {
+            if (action == null) throw new ArgumentNullException("action");
+            int index = -1;
+            if (this.commitCallbackAsyncList == null) this.commitCallbackAsyncList = new List<Func<IDatabase, Task>>(5);
+            else index = this.commitCallbackAsyncList.IndexOf(action);
+
+            if (index < 0)
+            {
+                this.commitCallbackAsyncList.Add(action);
+                index = this.commitCallbackAsyncList.Count - 1;
+            }
+
+            return index;
+        }
+
+        /// <summary>
+        /// 移除commit or SaveChanges 成功之后执行action
+        /// </summary>
+        /// <param name="action">需要执行的action</param>
+        /// <returns>移除成功返回true</returns>
+        public virtual bool RemoveCommitCallback(Func<IDatabase, Task> action)
+        {
+            bool result = false;
+            if (action == null) throw new ArgumentNullException("action");
+            if (this.commitCallbackAsyncList == null) return true;
+            result = this.commitCallbackAsyncList.Remove(action);
+
+            return result;
+        }
+
+        private async Task OnCommitCallbackAsync()
+        {
+            if (this.commitCallbackAsyncList != null)
+            {
+                foreach (var action in this.commitCallbackAsyncList)
+                {
+                    try { await action(this); }
+                    catch (Exception ex)
+                    {
+                        CommitCallbackError?.Invoke(ex);
+                    }
+                }
+            }
+        }
+#endif
+        /// <summary>
         /// 添加 commit or SaveChanges 成功之后执行action
         /// action 只执行一次
         /// </summary>
@@ -122,12 +186,14 @@ namespace Afx.Data
         public virtual int AddCommitCallback(Action<IDatabase> action)
         {
             if (action == null) throw new ArgumentNullException("action");
-            int index = this.CommitCallbackList.IndexOf(action);
+            int index = -1;
+            if (this.commitCallbackList == null) this.commitCallbackList = new List<Action<IDatabase>>(5);
+            else index = this.commitCallbackList.IndexOf(action);
 
             if (index < 0)
             {
-                this.CommitCallbackList.Add(action);
-                index = this.CommitCallbackList.Count - 1;
+                this.commitCallbackList.Add(action);
+                index = this.commitCallbackList.Count - 1;
             }
 
             return index;
@@ -142,7 +208,8 @@ namespace Afx.Data
         {
             bool result = false;
             if (action == null) throw new ArgumentNullException("action");
-            result = this.CommitCallbackList.Remove(action);
+            if (this.commitCallbackList == null) return true;
+             result = this.commitCallbackList.Remove(action);
 
             return result;
         }
@@ -152,19 +219,30 @@ namespace Afx.Data
         /// </summary>
         public virtual void ClearCommitCallback()
         {
-            this.CommitCallbackList.Clear();
+            if (this.commitCallbackList != null) this.commitCallbackList.Clear();
+#if !(NET20 || NET40)
+            if (this.commitCallbackAsyncList != null) this.commitCallbackAsyncList.Clear();
+#endif
         }
 
         private void OnCommitCallback()
         {
-            foreach (var action in this.CommitCallbackList)
+            if (this.commitCallbackList != null)
             {
-                try { action(this); }
-                catch (Exception ex)
+                foreach (var action in this.commitCallbackList)
                 {
-                    CommitCallbackError?.Invoke(ex);
+                    try { action(this); }
+                    catch (Exception ex)
+                    {
+                        CommitCallbackError?.Invoke(ex);
+                    }
                 }
             }
+
+#if !(NET20 || NET40)
+            this.OnCommitCallbackAsync().Wait();
+#endif
+
             this.ClearCommitCallback();
         }
 
@@ -609,8 +687,12 @@ namespace Afx.Data
                 this.connection = null;
                 this.ProviderFactory = null;
                 this.Log = null;
-                this.commitCallbackList.Clear();
+                if(this.commitCallbackList != null) this.commitCallbackList.Clear();
                 this.commitCallbackList = null;
+#if !(NET20 || NET40)
+                if (this.commitCallbackAsyncList != null) this.commitCallbackAsyncList.Clear();
+                this.commitCallbackAsyncList = null;
+#endif
                 this.Log = null;
                 this.CommitCallbackError = null;
 
