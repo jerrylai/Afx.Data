@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Afx.Data", "NET451\Afx.Data\Afx.Data.csproj", "{2001C439-FF25-4770-80AD-70D0A7ECC97F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Afx.Data", "NET6.0\Afx.Data\Afx.Data.csproj", "{FACCF127-D31D-451D-BB7E-222BB41DF9D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2001C439-FF25-4770-80AD-70D0A7ECC97F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2001C439-FF25-4770-80AD-70D0A7ECC97F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2001C439-FF25-4770-80AD-70D0A7ECC97F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2001C439-FF25-4770-80AD-70D0A7ECC97F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FACCF127-D31D-451D-BB7E-222BB41DF9D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FACCF127-D31D-451D-BB7E-222BB41DF9D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FACCF127-D31D-451D-BB7E-222BB41DF9D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FACCF127-D31D-451D-BB7E-222BB41DF9D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

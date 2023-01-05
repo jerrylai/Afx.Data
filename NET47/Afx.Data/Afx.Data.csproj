@@ -34,12 +34,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\Afx.Data\Attribute\DecimalAttribute.cs">
+      <Link>Attribute\DecimalAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Attribute\IndexAttribute.cs">
+      <Link>Attribute\IndexAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Attribute\NonClusteredAttribute.cs">
+      <Link>Attribute\NonClusteredAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\..\src\Afx.Data\Database.cs">
       <Link>Database.cs</Link>
     </Compile>
@@ -69,6 +79,48 @@
     </Compile>
     <Compile Include="..\..\src\Afx.Data\ReaderToModel.cs">
       <Link>ReaderToModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\ColumnInfoModel.cs">
+      <Link>Schema\ColumnInfoModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\DatabaseSchema.cs">
+      <Link>Schema\DatabaseSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\DataTypeModel.cs">
+      <Link>Schema\DataTypeModel.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\Interface\IDatabaseSchema.cs">
+      <Link>Schema\Interface\IDatabaseSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\Interface\ITableSchema.cs">
+      <Link>Schema\Interface\ITableSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\MsSqlServerDatabaseSchema.cs">
+      <Link>Schema\MsSqlServerDatabaseSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\MsSqlServerTableSchema.cs">
+      <Link>Schema\MsSqlServerTableSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\MySqlDatabaseSchema.cs">
+      <Link>Schema\MySqlDatabaseSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\MySqlTableSchema.cs">
+      <Link>Schema\MySqlTableSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\OracleDatabaseSchema.cs">
+      <Link>Schema\OracleDatabaseSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\OracleTableSchema.cs">
+      <Link>Schema\OracleTableSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\SQLiteDatabaseSchema.cs">
+      <Link>Schema\SQLiteDatabaseSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\SQLiteTableSchema.cs">
+      <Link>Schema\SQLiteTableSchema.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\Afx.Data\Schema\TableSchema.cs">
+      <Link>Schema\TableSchema.cs</Link>
     </Compile>
     <Compile Include="..\..\src\Assembly.cs">
       <Link>Properties\Assembly.cs</Link>

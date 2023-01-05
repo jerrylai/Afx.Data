@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Description>Afx.Data for .NET Standard 2.1</Description>
     <PackageReleaseNotes>Afx.Data for .NET Standard 2.0</PackageReleaseNotes>
-    <Version>10.3.0</Version>
+    <Version>11.0.0</Version>
     <Authors>jerrylai@aliyun.com</Authors>
     <Company>mycsv.cn</Company>
     <Copyright>Copyright © mycsv 2018</Copyright>
@@ -20,6 +20,9 @@
     </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\..\src\Afx.Data\Attribute\DecimalAttribute.cs" Link="Attribute\DecimalAttribute.cs" />
+    <Compile Include="..\..\src\Afx.Data\Attribute\IndexAttribute.cs" Link="Attribute\IndexAttribute.cs" />
+    <Compile Include="..\..\src\Afx.Data\Attribute\NonClusteredAttribute.cs" Link="Attribute\NonClusteredAttribute.cs" />
     <Compile Include="..\..\src\Afx.Data\Database.cs" Link="Database.cs" />
     <Compile Include="..\..\src\Afx.Data\Database.model.cs" Link="Database.model.cs" />
     <Compile Include="..\..\src\Afx.Data\DbLikeType.cs" Link="DbLikeType.cs" />
@@ -29,8 +32,27 @@
     <Compile Include="..\..\src\Afx.Data\ModelMaping.cs" Link="ModelMaping.cs" />
     <Compile Include="..\..\src\Afx.Data\ModelToParam.cs" Link="ModelToParam.cs" />
     <Compile Include="..\..\src\Afx.Data\ReaderToModel.cs" Link="ReaderToModel.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\ColumnInfoModel.cs" Link="Schema\ColumnInfoModel.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\DatabaseSchema.cs" Link="Schema\DatabaseSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\DataTypeModel.cs" Link="Schema\DataTypeModel.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\Interface\IDatabaseSchema.cs" Link="Schema\Interface\IDatabaseSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\Interface\ITableSchema.cs" Link="Schema\Interface\ITableSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\MsSqlServerDatabaseSchema.cs" Link="Schema\MsSqlServerDatabaseSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\MsSqlServerTableSchema.cs" Link="Schema\MsSqlServerTableSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\MySqlDatabaseSchema.cs" Link="Schema\MySqlDatabaseSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\MySqlTableSchema.cs" Link="Schema\MySqlTableSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\OracleDatabaseSchema.cs" Link="Schema\OracleDatabaseSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\OracleTableSchema.cs" Link="Schema\OracleTableSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\SQLiteDatabaseSchema.cs" Link="Schema\SQLiteDatabaseSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\SQLiteTableSchema.cs" Link="Schema\SQLiteTableSchema.cs" />
+    <Compile Include="..\..\src\Afx.Data\Schema\TableSchema.cs" Link="Schema\TableSchema.cs" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Attribute\" />
+    <Folder Include="Schema\Interface\" />
   </ItemGroup>
 </Project>

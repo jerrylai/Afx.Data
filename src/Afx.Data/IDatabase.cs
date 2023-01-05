@@ -371,9 +371,13 @@ namespace Afx.Data
         /// <returns></returns>
         int Delete<T>(string whereSql, object whereParam) where T : class;
 
-#endregion
+        #endregion
 
-
+        /// <summary>
+        /// 更新表结构，不存在创建，存在添加不存在列
+        /// </summary>
+        /// <param name="modelTypeList"></param>
+        bool CreateOrAlterTable(List<Type> modelTypeList);
 
         /// <summary>
         /// 添加匹配符%

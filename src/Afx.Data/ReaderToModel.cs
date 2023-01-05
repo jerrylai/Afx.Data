@@ -18,11 +18,17 @@ namespace Afx.Data
         public abstract object To(IDataReader reader);
 
         private Dictionary<string, int> dic;
+        /// <summary>
+        /// 
+        /// </summary>
         public ReaderToModel()
         {
             this.dic = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
         public virtual void SetOrdinal(IDataReader reader)
         {
             this.dic.Clear();
@@ -119,7 +125,9 @@ namespace Afx.Data
 
             return buffer;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public void Dispose()
         {
             this.dic = null;

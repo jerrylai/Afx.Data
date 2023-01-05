@@ -11,6 +11,9 @@ using System.Collections.Concurrent;
 
 namespace Afx.Data
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class ModelMaping
     {
 
@@ -84,32 +87,56 @@ namespace Afx.Data
                 [typeof(TimeSpan?)] = DbType.Time
             };
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dbType"></param>
         public static void AddDbType<T>(DbType dbType)
         {
             dbTypeDic[typeof(T)] = dbType;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public static void AddConvert<T>(Func<object, T> func)
         {
             if (func == null) throw new ArgumentNullException(nameof(func));
             convertDic[typeof(T)] = func.Method;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static DateTimeOffset ConvertToDateTimeOffset(object obj)
         {
             if (obj == null) throw new ArgumentNullException("obj");
             if (obj is DateTimeOffset) return (DateTimeOffset)obj;
             return DateTimeOffset.Parse(obj.ToString());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static Guid ConvertToGuid(object obj)
         {
             if (obj == null) throw new ArgumentNullException("obj");
             if (obj is Guid) return (Guid)obj;
             return new Guid(obj.ToString());
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static TimeSpan ConvertToTimeSpan(object obj)
         {
             if (obj == null) throw new ArgumentNullException("obj");

@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <Description>Afx.Data for .NET Standard 2.0</Description>
-    <PackageReleaseNotes>Afx.Data for .NET Standard 2.0</PackageReleaseNotes>
+    <TargetFramework>net6.0</TargetFramework>
+    <Description>Afx.Data for .NET 6.0</Description>
+    <PackageReleaseNotes>Afx.Data for .NET 6.0</PackageReleaseNotes>
     <Version>11.0.0</Version>
     <Authors>jerrylai@aliyun.com</Authors>
     <Company>mycsv.cn</Company>
     <Copyright>Copyright © mycsv 2018</Copyright>
-    <Product>Afx.Data for .NET Standard 2.0</Product>
+    <Product>Afx.Data for .NET 6.0</Product>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -46,10 +46,6 @@
     <Compile Include="..\..\src\Afx.Data\Schema\SQLiteDatabaseSchema.cs" Link="Schema\SQLiteDatabaseSchema.cs" />
     <Compile Include="..\..\src\Afx.Data\Schema\SQLiteTableSchema.cs" Link="Schema\SQLiteTableSchema.cs" />
     <Compile Include="..\..\src\Afx.Data\Schema\TableSchema.cs" Link="Schema\TableSchema.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Attribute\" />

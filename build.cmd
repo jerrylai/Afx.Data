@@ -7,6 +7,7 @@ if exist publish rd /s /q publish
 %Build% "NET48/Afx.Data/Afx.Data.csproj" /t:Rebuild /p:Configuration=Release
 dotnet build "NETStandard2.0/Afx.Data/Afx.Data.csproj" -c Release
 dotnet build "NETStandard2.1/Afx.Data/Afx.Data.csproj" -c Release
+dotnet build "NET6.0/Afx.Data/Afx.Data.csproj" -c Release
 cd publish
 del /q/s *.pdb
 pause

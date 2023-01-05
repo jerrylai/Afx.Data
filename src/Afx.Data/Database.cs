@@ -4,6 +4,8 @@ using System.Text;
 using System.Data;
 using System.Data.Common;
 using System.Reflection;
+using Afx.Data.Schema;
+using System.Linq;
 
 #if !(NET20 || NET40)
 using System.Threading.Tasks;
@@ -209,7 +211,7 @@ namespace Afx.Data
             bool result = false;
             if (action == null) throw new ArgumentNullException("action");
             if (this.commitCallbackList == null) return true;
-             result = this.commitCallbackList.Remove(action);
+            result = this.commitCallbackList.Remove(action);
 
             return result;
         }
@@ -375,7 +377,7 @@ namespace Afx.Data
             this.transaction = this.Connection.BeginTransaction();
             this.tran_version++;
             if (this.isLog) this.OnLog("-- BeginTransaction");
-            
+
             return new TranRollback(this, this.tran_version);
         }
 
@@ -568,7 +570,7 @@ namespace Afx.Data
             {
                 ic = ModelMaping.GetReaderToModel(t);
             }
-            
+
             using (this.Open())
             {
                 using (IDbCommand command = this.Connection.CreateCommand())
@@ -669,13 +671,107 @@ namespace Afx.Data
         #endregion
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected abstract IDatabaseSchema GetDatabaseSchema();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected abstract ITableSchema GeTableSchema();
+
+
+        /// <summary>
+        /// 更新表结构，不存在创建，存在添加不存在列
+        /// </summary>
+        /// <param name="modelTypeList"></param>
+        public virtual bool CreateOrAlterTable(List<Type> modelTypeList)
+        {
+            if (modelTypeList == null || modelTypeList.Count == 0) return false;
+            using (var databaseSchema = GetDatabaseSchema())
+            {
+                if (databaseSchema == null) return false;
+                using (var tableSchema = GeTableSchema())
+                {
+                    if (tableSchema == null) return false;
+                  if(!databaseSchema.Exist()) databaseSchema.CreateDatabase();
+                    List<string> tables = tableSchema.GetTables();
+                    foreach (var t in modelTypeList)
+                    {
+                        if (t == null || !t.IsClass || t.IsAbstract) continue;
+                        var tb = tableSchema.GetTableName(t);
+                        if (!tables.Exists(q => string.Equals(q, tb, StringComparison.OrdinalIgnoreCase)))
+                        {
+                            var columns = tableSchema.GetColumns(t, tb);
+                            tableSchema.CreateTable(tb, columns);
+                        }
+                        else
+                        {
+                            var tableColumns = tableSchema.GetTableColumns(tb);
+                            var modelColumns = tableSchema.GetColumns(t, tb);
+                            List<IndexModel> addIndexs = new List<IndexModel>();
+                            foreach (var mColumn in modelColumns)
+                            {
+                                var tColumn = tableColumns.Find(q => q.Name.Equals(mColumn.Name, StringComparison.OrdinalIgnoreCase));
+                                if (tColumn == null)
+                                {
+                                    tableSchema.AddColumn(tb, mColumn);
+                                    if (mColumn.Indexs != null && mColumn.Indexs.Count > 0)
+                                    {
+                                        foreach (var index in mColumn.Indexs)
+                                        {
+                                            if (string.IsNullOrEmpty(index.Name)) continue;
+                                            if (string.IsNullOrEmpty(index.ColumnName)) index.ColumnName = mColumn.Name;
+                                            addIndexs.Add(index);
+                                        }
+                                    }
+                                }
+                                else if (mColumn.Indexs != null && mColumn.Indexs.Count > 0)
+                                {
+                                    // 添加数据库不存在索引
+                                    foreach (var index in mColumn.Indexs)
+                                    {
+                                        if (string.IsNullOrEmpty(index.Name)) continue;
+                                        if (string.IsNullOrEmpty(index.ColumnName)) index.ColumnName = mColumn.Name;
+
+                                        if (tColumn.Indexs == null || tColumn.Indexs.Count == 0)
+                                        {
+                                            addIndexs.Add(index);
+                                        }
+                                        else
+                                        {
+                                            var tindex = tColumn.Indexs.Find(q => index.Name.Equals(q.Name, StringComparison.OrdinalIgnoreCase));
+                                            if (tindex == null || tindex.IsUnique != index.IsUnique)
+                                            {
+                                                addIndexs.Add(index);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (addIndexs.Count > 0) tableSchema.AddIndex(tb, addIndexs);
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// 释放资源
         /// </summary>
         public void Dispose()
         {
             this.Dispose(true);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             this.isOpenKeep = false;
@@ -707,7 +803,9 @@ namespace Afx.Data
             {
                 this.db = db;
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
             public void Dispose()
             {
                 if (this.db != null)
@@ -727,7 +825,9 @@ namespace Afx.Data
                 this.db = db;
                 this.tran_ver = tran_ver;
             }
-
+            /// <summary>
+            /// 
+            /// </summary>
             public void Dispose()
             {
                 if(this.db != null && this.db.transaction != null && this.db.tran_version == this.tran_ver)
