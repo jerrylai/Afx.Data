@@ -86,9 +86,6 @@
     <Compile Include="..\..\src\Afx.Data\Schema\DatabaseSchema.cs">
       <Link>Schema\DatabaseSchema.cs</Link>
     </Compile>
-    <Compile Include="..\..\src\Afx.Data\Schema\DataTypeModel.cs">
-      <Link>Schema\DataTypeModel.cs</Link>
-    </Compile>
     <Compile Include="..\..\src\Afx.Data\Schema\Interface\IDatabaseSchema.cs">
       <Link>Schema\Interface\IDatabaseSchema.cs</Link>
     </Compile>

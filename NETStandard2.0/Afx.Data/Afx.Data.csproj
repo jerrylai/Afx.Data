@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>Afx.Data for .NET Standard 2.0</Description>
     <PackageReleaseNotes>Afx.Data for .NET Standard 2.0</PackageReleaseNotes>
-    <Version>11.0.0</Version>
+    <Version>11.0.1</Version>
     <Authors>jerrylai@aliyun.com</Authors>
     <Company>mycsv.cn</Company>
     <Copyright>Copyright © mycsv 2018</Copyright>
@@ -34,7 +34,6 @@
     <Compile Include="..\..\src\Afx.Data\ReaderToModel.cs" Link="ReaderToModel.cs" />
     <Compile Include="..\..\src\Afx.Data\Schema\ColumnInfoModel.cs" Link="Schema\ColumnInfoModel.cs" />
     <Compile Include="..\..\src\Afx.Data\Schema\DatabaseSchema.cs" Link="Schema\DatabaseSchema.cs" />
-    <Compile Include="..\..\src\Afx.Data\Schema\DataTypeModel.cs" Link="Schema\DataTypeModel.cs" />
     <Compile Include="..\..\src\Afx.Data\Schema\Interface\IDatabaseSchema.cs" Link="Schema\Interface\IDatabaseSchema.cs" />
     <Compile Include="..\..\src\Afx.Data\Schema\Interface\ITableSchema.cs" Link="Schema\Interface\ITableSchema.cs" />
     <Compile Include="..\..\src\Afx.Data\Schema\MsSqlServerDatabaseSchema.cs" Link="Schema\MsSqlServerDatabaseSchema.cs" />
