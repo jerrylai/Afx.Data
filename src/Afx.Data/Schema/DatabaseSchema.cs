@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Data;
 using System.Data.Common;
+using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -22,13 +23,13 @@ namespace Afx.Data.Schema
         /// 创建数据库
         /// </summary>
         /// <returns>true：创建成功，false：创建失败</returns>
-        public abstract bool CreateDatabase();
+        public abstract Task<bool> CreateDatabase();
 
         /// <summary>
         /// 删除数据库
         /// </summary>
         /// <returns>true：删除成功，false：删除失败</returns>
-        public abstract bool DeleteDatabase();
+        public abstract Task<bool> DeleteDatabase();
 
         /// <summary>
         /// 释放所有资源

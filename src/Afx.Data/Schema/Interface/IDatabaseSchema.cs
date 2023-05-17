@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -20,12 +21,11 @@ namespace Afx.Data.Schema
         /// 创建数据库
         /// </summary>
         /// <returns>true：创建成功，false：创建失败</returns>
-        bool CreateDatabase();
-
+        Task<bool> CreateDatabase();
         /// <summary>
         /// 删除数据库
         /// </summary>
         /// <returns>true：删除成功，false：删除失败</returns>
-        bool DeleteDatabase();
+        Task<bool> DeleteDatabase();
     }
 }

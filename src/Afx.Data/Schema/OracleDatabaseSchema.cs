@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -37,21 +38,21 @@ namespace Afx.Data.Schema
         /// 创建数据库
         /// </summary>
         /// <returns>true：创建成功，false：创建失败</returns>
-        public override bool CreateDatabase()
+        public override Task<bool> CreateDatabase()
         {
             var obj = this.db.ExecuteScalar<long?>("SELECT 1 FROM DUAL");
             int count = obj != null ? Convert.ToInt32(obj) : 0;
 
-            return count > 0;
+            return Task.FromResult(count > 0);
         }
         /// <summary>
         /// 删除数据库
         /// </summary>
         /// <returns>true：删除成功，false：删除失败</returns>
-        public override bool DeleteDatabase()
+        public override Task<bool> DeleteDatabase()
         {
 
-            return false;
+            return Task.FromResult(false);
         }
 
         /// <summary>

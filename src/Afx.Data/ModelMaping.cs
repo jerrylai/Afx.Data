@@ -5,9 +5,7 @@ using System.Data.Common;
 using System.Reflection;
 using System.Text;
 using System.Reflection.Emit;
-#if !NET20
 using System.Collections.Concurrent;
-#endif
 
 namespace Afx.Data
 {
@@ -170,11 +168,8 @@ namespace Afx.Data
             return moduleBuilder;
         }
 
-#if NET20
-        private static Afx.Collections.SafeDictionary<Type, Type> cacheDic = new Afx.Collections.SafeDictionary<Type, Type>();
-#else
         private static ConcurrentDictionary<Type, Type> cacheDic = new ConcurrentDictionary<Type, Type>();
-#endif
+
         internal static ReaderToModel GetReaderToModel(Type t)
         {
             ReaderToModel ic = null;

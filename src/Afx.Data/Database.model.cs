@@ -5,9 +5,8 @@ using System.Data.Common;
 using System.Reflection;
 using System.Text;
 using System.Reflection.Emit;
-#if !NET20
+using System.Threading.Tasks;
 using System.Collections.Concurrent;
-#endif
 
 namespace Afx.Data
 {
@@ -227,7 +226,7 @@ namespace Afx.Data
         /// <param name="m">参数</param>
         /// <param name="ignore">忽略插入列</param>
         /// <returns></returns>
-        public virtual int Add<T>(T m, params string[] ignore) where T : class
+        public virtual async Task<int> Add<T>(T m, params string[] ignore) where T : class
         {
             if (m == null) throw new ArgumentNullException(nameof(m));
             var t = typeof(T);
@@ -241,8 +240,7 @@ namespace Afx.Data
             if (ps.Count == 0) throw new ArgumentException($"T({t.FullName}) is error!");
 
             var sql = this.GetInsertSql(t.Name, ps);
-            int count = this.ExecuteNonQuery(sql, m);
-
+            int count = await this.ExecuteNonQuery(sql, m);
             return count;
         }
         /// <summary>
@@ -251,7 +249,7 @@ namespace Afx.Data
         /// <param name="table">插入表</param>
         /// <param name="param"></param>
         /// <returns></returns>
-        public virtual int Add(string table, object param)
+        public virtual async Task<int> Add(string table, object param)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException(nameof(table));
             if (param == null) throw new ArgumentNullException(nameof(param));
@@ -271,8 +269,7 @@ namespace Afx.Data
                 sql = this.GetInsertSql(table, pps);
             }
 
-            int count = this.ExecuteNonQuery(sql, param);
-
+            int count = await this.ExecuteNonQuery(sql, param);
             return count;
         }
 
@@ -423,7 +420,7 @@ namespace Afx.Data
         /// <param name="setParam">set 参数</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Update(string table, object setParam, object whereParam)
+        public virtual async Task<int> Update(string table, object setParam, object whereParam)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException(nameof(table));
             if (setParam == null) throw new ArgumentNullException(nameof(setParam));
@@ -434,8 +431,7 @@ namespace Afx.Data
 
             var sql = setSql + whereSql;
 
-            int count = this.ExecuteNonQuery(sql, allParamDic);
-
+            int count = await this.ExecuteNonQuery(sql, allParamDic);
             return count;
         }
 
@@ -446,9 +442,9 @@ namespace Afx.Data
         /// <param name="setParam">set 参数</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Update<T>(object setParam, object whereParam) where T : class
+        public virtual async Task<int> Update<T>(object setParam, object whereParam) where T : class
         {
-            return this.Update(typeof(T).Name, setParam, whereParam);
+            return await this.Update(typeof(T).Name, setParam, whereParam);
         }
 
         /// <summary>
@@ -459,7 +455,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Update(string table, object setParam, string whereSql, object whereParam)
+        public virtual async Task<int> Update(string table, object setParam, string whereSql, object whereParam)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException(nameof(table));
             if (setParam == null) throw new ArgumentNullException(nameof(setParam));
@@ -509,7 +505,7 @@ namespace Afx.Data
 
             if (!string.IsNullOrEmpty(whereSql)) sql = $"{sql} WHERE {whereSql}";
 
-            int count = this.ExecuteNonQuery(sql, allParamDic);
+            int count = await this.ExecuteNonQuery(sql, allParamDic);
 
             return count;
         }
@@ -522,9 +518,9 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Update<T>(object setParam, string whereSql, object whereParam) where T : class
+        public virtual async Task<int> Update<T>(object setParam, string whereSql, object whereParam) where T : class
         {
-            return this.Update(typeof(T).Name, setParam, whereSql, whereParam);
+            return await this.Update(typeof(T).Name, setParam, whereSql, whereParam);
         }
 
         /// <summary>
@@ -536,7 +532,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Update(string table, string setSql, object setParam, string whereSql, object whereParam)
+        public virtual async Task<int> Update(string table, string setSql, object setParam, string whereSql, object whereParam)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException(nameof(table));
             if (string.IsNullOrEmpty(setSql)) throw new ArgumentNullException(nameof(setSql));
@@ -607,8 +603,7 @@ namespace Afx.Data
             }
 
             if (!string.IsNullOrEmpty(whereSql)) sql = $"{sql} WHERE {whereSql}";
-
-            int count = this.ExecuteNonQuery(sql, allParamDic);
+            int count = await this.ExecuteNonQuery(sql, allParamDic);
 
             return count;
         }
@@ -621,9 +616,9 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Update<T>(string setSql, object setParam, string whereSql, object whereParam) where T : class
+        public virtual async Task<int> Update<T>(string setSql, object setParam, string whereSql, object whereParam) where T : class
         {
-            return this.Update(typeof(T).Name, setSql, setParam, whereSql, whereParam);
+            return await this.Update(typeof(T).Name, setSql, setParam, whereSql, whereParam);
         }
 
         #endregion
@@ -636,7 +631,7 @@ namespace Afx.Data
         /// <param name="table">数据表</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Delete(string table, object whereParam)
+        public virtual async Task<int> Delete(string table, object whereParam)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException(nameof(table));
             var sql = new StringBuilder();
@@ -679,9 +674,7 @@ namespace Afx.Data
                     }
                 }
             }
-
-            int count = this.ExecuteNonQuery(sql.ToString(), whereParam);
-
+            int count = await this.ExecuteNonQuery(sql.ToString(), whereParam);
             return count;
         }
         /// <summary>
@@ -690,9 +683,9 @@ namespace Afx.Data
         /// <typeparam name="T">数据表</typeparam>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Delete<T>(object whereParam) where T : class
+        public virtual async Task<int> Delete<T>(object whereParam) where T : class
         {
-            return this.Delete(typeof(T).Name, whereParam);
+            return await this.Delete(typeof(T).Name, whereParam);
         }
         /// <summary>
         /// 删除数据
@@ -701,14 +694,13 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Delete(string table, string whereSql, object whereParam)
+        public virtual async Task<int> Delete(string table, string whereSql, object whereParam)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException(nameof(table));
 
             var sql = $"DELETE FROM {table}";
             if (!string.IsNullOrEmpty(whereSql)) sql = $"{sql} WHERE {whereSql}";
-            int count = this.ExecuteNonQuery(sql, whereParam);
-
+            int count = await this.ExecuteNonQuery(sql, whereParam);
             return count;
         }
 
@@ -719,14 +711,14 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        public virtual int Delete<T>(string whereSql, object whereParam) where T : class
+        public virtual async Task<int> Delete<T>(string whereSql, object whereParam) where T : class
         {
-            return this.Delete(typeof(T).Name, whereSql, whereParam);
+            return await this.Delete(typeof(T).Name, whereSql, whereParam);
         }
 
         #endregion
 
-        
+
 
         /// <summary>
         /// 添加匹配符%

@@ -3,10 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-
-#if !(NET20 || NET40)
 using System.Threading.Tasks;
-#endif
 
 namespace Afx.Data
 {
@@ -74,7 +71,6 @@ namespace Afx.Data
         /// <param name="action">需要执行的action</param>
         /// <returns>移除成功返回true</returns>
         bool RemoveCommitCallback(Action<IDatabase> action);
-#if !(NET20 || NET40)
         /// <summary>
         ///  commit or SaveChanges 成功之后执行action list
         /// </summary>
@@ -93,8 +89,6 @@ namespace Afx.Data
         /// <param name="action">需要执行的action</param>
         /// <returns>移除成功返回true</returns>
         bool RemoveCommitCallback(Func<IDatabase, Task> action);
-#endif
-
 
         /// <summary>
         /// 移除所有action
@@ -174,7 +168,7 @@ namespace Afx.Data
         /// <summary>
         /// 提交事务
         /// </summary>
-        void Commit();
+        Task Commit();
 
         /// <summary>
         /// 回滚事务
@@ -200,7 +194,8 @@ namespace Afx.Data
         /// <param name="param">sql参数，model or dictionary string object or IEnumerable&lt;DbParameter&gt; or IEnumerable&lt;IDataParameter&gt;</param>
         /// <param name="commandType"></param>
         /// <returns></returns>
-        int ExecuteNonQuery(string sql, object param = null, CommandType? commandType = null);
+        Task<int> ExecuteNonQuery(string sql, object param = null, CommandType? commandType = null);
+
 
         /// <summary>
         /// 执行sql，返回第一行的第一列
@@ -259,7 +254,7 @@ namespace Afx.Data
         /// <param name="m">参数</param>
         /// <param name="ignore">忽略插入列</param>
         /// <returns></returns>
-        int Add<T>(T m, params string[] ignore) where T : class;
+        Task<int> Add<T>(T m, params string[] ignore) where T : class;
 
         /// <summary>
         /// 添加数据
@@ -267,11 +262,11 @@ namespace Afx.Data
         /// <param name="table">插入表</param>
         /// <param name="param"></param>
         /// <returns></returns>
-        int Add(string table, object param);
+        Task<int> Add(string table, object param);
 
-#endregion
+        #endregion
 
-#region update
+        #region update
 
         /// <summary>
         /// 更新数据
@@ -280,7 +275,7 @@ namespace Afx.Data
         /// <param name="setParam">set 参数</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Update(string table, object setParam, object whereParam);
+        Task<int> Update(string table, object setParam, object whereParam);
 
         /// <summary>
         /// 更新数据
@@ -289,7 +284,7 @@ namespace Afx.Data
         /// <param name="setParam">set 参数</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Update<T>(object setParam, object whereParam) where T : class;
+        Task<int> Update<T>(object setParam, object whereParam) where T : class;
 
         /// <summary>
         /// 更新数据
@@ -299,8 +294,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Update(string table, object setParam, string whereSql, object whereParam);
-
+        Task<int> Update(string table, object setParam, string whereSql, object whereParam);
         /// <summary>
         /// 更新数据
         /// </summary>
@@ -309,7 +303,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Update<T>(object setParam, string whereSql, object whereParam) where T : class;
+        Task<int> Update<T>(object setParam, string whereSql, object whereParam) where T : class;
 
         /// <summary>
         /// 更新数据
@@ -320,7 +314,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Update(string table, string setSql, object setParam, string whereSql, object whereParam);
+        Task<int> Update(string table, string setSql, object setParam, string whereSql, object whereParam);
 
         /// <summary>
         /// 更新数据
@@ -331,11 +325,11 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Update<T>(string setSql, object setParam, string whereSql, object whereParam) where T : class;
+        Task<int> Update<T>(string setSql, object setParam, string whereSql, object whereParam) where T : class;
 
-#endregion
+        #endregion
 
-#region delete
+        #region delete
 
         /// <summary>
         /// 删除数据
@@ -343,7 +337,7 @@ namespace Afx.Data
         /// <param name="table">数据表</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Delete(string table, object whereParam);
+        Task<int> Delete(string table, object whereParam);
 
         /// <summary>
         /// 删除数据
@@ -351,7 +345,7 @@ namespace Afx.Data
         /// <typeparam name="T">数据表</typeparam>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Delete<T>(object whereParam) where T : class;
+        Task<int> Delete<T>(object whereParam) where T : class;
 
         /// <summary>
         /// 删除数据
@@ -360,7 +354,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Delete(string table, string whereSql, object whereParam);
+        Task<int> Delete(string table, string whereSql, object whereParam);
 
         /// <summary>
         /// 删除数据
@@ -369,7 +363,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        int Delete<T>(string whereSql, object whereParam) where T : class;
+        Task<int> Delete<T>(string whereSql, object whereParam) where T : class;
 
         #endregion
 
