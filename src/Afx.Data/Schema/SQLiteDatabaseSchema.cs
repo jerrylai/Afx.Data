@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -47,29 +46,30 @@ namespace Afx.Data.Schema
         /// 创建数据库
         /// </summary>
         /// <returns>true：创建成功，false：创建失败</returns>
-        public override async Task<bool> CreateDatabase()
+        public override bool CreateDatabase()
         {
             string path = System.IO.Path.GetDirectoryName(this.file);
             if (!System.IO.Directory.Exists(path))
             {
                 System.IO.Directory.CreateDirectory(path);
             }
-            await db.ExecuteNonQuery("create table _tb_create_db_temp(id int not null)");
-            await db.ExecuteNonQuery("drop table _tb_create_db_temp");
+            db.ExecuteNonQuery("create table _tb_create_db_temp(id int not null)");
+            db.ExecuteNonQuery("drop table _tb_create_db_temp");
+
             return true;
         }
         /// <summary>
         /// 删除数据库
         /// </summary>
         /// <returns>true：删除成功，false：删除失败</returns>
-        public override Task<bool> DeleteDatabase()
+        public override bool DeleteDatabase()
         {
             if (System.IO.File.Exists(this.file))
             {
                 System.IO.File.Delete(this.file);
             }
 
-            return Task.FromResult(true);
+            return true;
         }
 
         /// <summary>

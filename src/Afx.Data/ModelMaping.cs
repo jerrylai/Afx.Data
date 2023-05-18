@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Reflection;
-using System.Text;
 using System.Reflection.Emit;
 using System.Collections.Concurrent;
 
@@ -169,7 +167,6 @@ namespace Afx.Data
         }
 
         private static ConcurrentDictionary<Type, Type> cacheDic = new ConcurrentDictionary<Type, Type>();
-
         internal static ReaderToModel GetReaderToModel(Type t)
         {
             ReaderToModel ic = null;

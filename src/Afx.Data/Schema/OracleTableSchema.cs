@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -43,7 +41,7 @@ namespace Afx.Data.Schema
         /// </summary>
         /// <param name="table">表名</param>
         /// <param name="indexs">索引列信息</param>
-        public override async Task AddIndex(string table, List<IndexModel> indexs)
+        public override void AddIndex(string table, List<IndexModel> indexs)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (indexs == null) throw new ArgumentNullException("columns");
@@ -60,7 +58,7 @@ namespace Afx.Data.Schema
                     {
                         columnList.Add(m.ColumnName);
                     }
-                    await this.AddIndex(table, indexName, isUnique, columnList);
+                    this.AddIndex(table, indexName, isUnique, columnList);
                 }
             }
         }
@@ -72,7 +70,7 @@ namespace Afx.Data.Schema
         /// <param name="isUnique">是否唯一索引</param>
         /// <param name="columns">列名</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> AddIndex(string table, string indexName, bool isUnique, List<string> columns)
+        public override bool AddIndex(string table, string indexName, bool isUnique, List<string> columns)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (string.IsNullOrEmpty(indexName)) throw new ArgumentNullException("indexName");
@@ -94,8 +92,7 @@ namespace Afx.Data.Schema
 
                 var sql = string.Format("CREATE {0} INDEX \"{1}\" ON \"{2}\" ({3});",
                     isUnique ? "UNIQUE" : "", indexName, table, strColumns.ToString());
-
-                count = await this.db.ExecuteNonQuery(sql);
+                count = this.db.ExecuteNonQuery(sql);
             }
 
             return count != 0;
@@ -106,7 +103,7 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="index">索引列信息</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> AddIndex(string table, IndexModel index)
+        public override bool AddIndex(string table, IndexModel index)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (index == null) throw new ArgumentNullException("index");
@@ -119,7 +116,7 @@ namespace Afx.Data.Schema
                 {
                     var sql = string.Format("CREATE {0} INDEX \"{1}\" ON \"{2}\" (\"{3}\");",
                         index.IsUnique ? "UNIQUE" : "", index.Name, table, index.ColumnName);
-                    count = await this.db.ExecuteNonQuery(sql);
+                    count = this.db.ExecuteNonQuery(sql);
                 }
             }
 
@@ -131,7 +128,7 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="index">索引名称</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> DeleteIndex(string table, string index)
+        public override bool DeleteIndex(string table, string index)
         {
             int count = 0;
             if (!string.IsNullOrEmpty(index))
@@ -141,8 +138,7 @@ namespace Afx.Data.Schema
                 if (Convert.ToInt32(obj) > 0)
                 {
                     var sql = string.Format("DROP INDEX \"{0}\"", index);
-
-                    count = await this.db.ExecuteNonQuery(sql);
+                    count = this.db.ExecuteNonQuery(sql);
                 }
             }
 
@@ -154,7 +150,7 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="columns">列信息</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> CreateTable(string table, List<ColumnInfoModel> columns)
+        public override bool CreateTable(string table, List<ColumnInfoModel> columns)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (columns == null) throw new ArgumentNullException("columns");
@@ -187,15 +183,12 @@ namespace Afx.Data.Schema
             createTableSql.Append(")");
 
             var sql = createTableSql.ToString();
-            count = await this.db.ExecuteNonQuery(sql);
+            count = this.db.ExecuteNonQuery(sql);
             foreach (var column in columns.Where(q => q.IsAutoIncrement))
             {
-               await  this.AddAutoIncrement(table, column);
+                this.AddAutoIncrement(table, column);
             }
-            if (indexs.Count > 0)
-            {
-                await this.AddIndex(table, indexs);
-            }
+            if (indexs.Count > 0) this.AddIndex(table, indexs);
 
             return count != 0;
         }
@@ -210,7 +203,7 @@ namespace Afx.Data.Schema
             return string.Format("TR_{0}_{1}", table, column);
         }
 
-        private async Task<int> AddAutoIncrement(string table, ColumnInfoModel column)
+        private int AddAutoIncrement(string table, ColumnInfoModel column)
         {
             int count = 0;
             if (column.IsAutoIncrement)
@@ -221,7 +214,7 @@ namespace Afx.Data.Schema
                 if (Convert.ToInt32(obj) == 0)
                 {
                     var sql = string.Format("CREATE SEQUENCE \"{0}\" MINVALUE 1 MAXVALUE 9999999999999999999999999999 START WITH 1 INCREMENT BY 1 NOCACHE", sq_name);
-                    count += await this.db.ExecuteNonQuery(sql);
+                    count += this.db.ExecuteNonQuery(sql);
                 }
 
                 string tr_name = this.GetTriggerName(table, column.Name);
@@ -230,7 +223,7 @@ namespace Afx.Data.Schema
                 if (Convert.ToInt32(obj) == 0)
                 {
                     var sql = string.Format("CREATE TRIGGER \"{0}\" BEFORE INSERT ON \"{1}\" FOR EACH ROW BEGIN SELECT \"{2}\".NEXTVAL INTO :NEW.\"{3}\" FROM DUAL; END;", tr_name, table, sq_name, column.Name);
-                    count += await db.ExecuteNonQuery(sql);
+                    count += db.ExecuteNonQuery(sql);
                 }
             }
 
@@ -243,7 +236,7 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="column">列信息</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> AddColumn(string table, ColumnInfoModel column)
+        public override bool AddColumn(string table, ColumnInfoModel column)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (column == null) throw new ArgumentNullException("column");
@@ -251,10 +244,10 @@ namespace Afx.Data.Schema
 
             var sql = string.Format("ALTER TABLE \"{0}\" ADD (\"{1}\" {2} {3} NULL)",
                 table, column.Name, column.DataType, column.IsNullable ? "" : "NOT");
-            count = await this.db.ExecuteNonQuery(sql);
+            count = this.db.ExecuteNonQuery(sql);
             if (column.IsAutoIncrement)
             {
-                count += await this.AddAutoIncrement(table, column);
+                count += this.AddAutoIncrement(table, column);
             }
 
             return count != 0;

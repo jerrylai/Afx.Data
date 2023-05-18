@@ -4,7 +4,6 @@ using System.Data;
 using System.Data.Common;
 using System.Reflection;
 using Afx.Data.Schema;
-using System.Threading.Tasks;
 
 namespace Afx.Data
 {
@@ -21,7 +20,6 @@ namespace Afx.Data
         private bool isOwnsConnection = true;
         private volatile bool isOpenKeep = false;
         private List<Action<IDatabase>> commitCallbackList;
-        private List<Func<IDatabase, Task>> commitCallbackAsyncList;
 
         /// <summary>
         /// 资源是否释放
@@ -158,70 +156,15 @@ namespace Afx.Data
         public virtual void ClearCommitCallback()
         {
             if (this.commitCallbackList != null) this.commitCallbackList.Clear();
-            if (this.commitCallbackAsyncList != null) this.commitCallbackAsyncList.Clear();
         }
 
-        /// <summary>
-        ///  commit or SaveChanges 成功之后执行action list
-        /// </summary>
-        public List<Func<IDatabase, Task>> CommitCallbackAsyncList { get { return this.commitCallbackAsyncList ?? new List<Func<IDatabase, Task>>(0); } }
-
-        /// <summary>
-        /// 添加 commit or SaveChanges 成功之后执行action
-        /// action 只执行一次
-        /// </summary>
-        /// <param name="action">需要执行的action</param>
-        /// <returns>添加成功，返回所在的位置</returns>
-        public virtual int AddCommitCallback(Func<IDatabase, Task> action)
-        {
-            if (action == null) throw new ArgumentNullException("action");
-            int index = -1;
-            if (this.commitCallbackAsyncList == null) this.commitCallbackAsyncList = new List<Func<IDatabase, Task>>(5);
-            else index = this.commitCallbackAsyncList.IndexOf(action);
-
-            if (index < 0)
-            {
-                this.commitCallbackAsyncList.Add(action);
-                index = this.commitCallbackAsyncList.Count - 1;
-            }
-
-            return index;
-        }
-
-        /// <summary>
-        /// 移除commit or SaveChanges 成功之后执行action
-        /// </summary>
-        /// <param name="action">需要执行的action</param>
-        /// <returns>移除成功返回true</returns>
-        public virtual bool RemoveCommitCallback(Func<IDatabase, Task> action)
-        {
-            bool result = false;
-            if (action == null) throw new ArgumentNullException("action");
-            if (this.commitCallbackAsyncList == null) return true;
-            result = this.commitCallbackAsyncList.Remove(action);
-
-            return result;
-        }
-
-        private async Task OnCommitCallback()
+        private void OnCommitCallback()
         {
             if (this.commitCallbackList != null)
             {
                 foreach (var action in this.commitCallbackList)
                 {
                     try { action(this); }
-                    catch (Exception ex)
-                    {
-                        CommitCallbackError?.Invoke(ex);
-                    }
-                }
-            }
-
-            if (this.commitCallbackAsyncList != null)
-            {
-                foreach (var action in this.commitCallbackAsyncList)
-                {
-                    try { await action(this); }
                     catch (Exception ex)
                     {
                         CommitCallbackError?.Invoke(ex);
@@ -383,7 +326,7 @@ namespace Afx.Data
         /// <summary>
         /// 提交事务
         /// </summary>
-        public async Task Commit()
+        public void Commit()
         {
             if (null == this.transaction) throw new InvalidOperationException("未开启事务，不能提交！");
             this.transaction.Commit();
@@ -391,7 +334,7 @@ namespace Afx.Data
             this.transaction = null;
             if (this.isLog) this.OnLog("-- Commit");
             this.Close();
-            await this.OnCommitCallback();
+            this.OnCommitCallback();
         }
 
         /// <summary>
@@ -594,7 +537,7 @@ namespace Afx.Data
         /// <param name="param">sql参数，model or dictionary string object or IEnumerable&lt;DbParameter&gt; or IEnumerable&lt;IDataParameter&gt;</param>
         /// <param name="commandType"></param>
         /// <returns></returns>
-        public virtual async Task<int> ExecuteNonQuery(string sql, object param = null, CommandType? commandType = null)
+        public virtual int ExecuteNonQuery(string sql, object param = null, CommandType? commandType = null)
         {
             this.CheckSql(sql);
             using (this.Open())
@@ -608,10 +551,7 @@ namespace Afx.Data
                     AddParam(command, sql, param);
                     WriteLog(command);
                     var num = command.ExecuteNonQuery();
-                    if (!this.IsTransaction)
-                    {
-                        await this.OnCommitCallback();
-                    }
+                    if (!this.IsTransaction) this.OnCommitCallback();
 
                     return num;
                 }
@@ -650,6 +590,7 @@ namespace Afx.Data
                     object o = command.ExecuteScalar();
                     object v = ChangeType(o, t);
                     if (v != null) m = (T)v;
+                    if (!this.IsTransaction) this.OnCommitCallback();
 
                     return m;
                 }
@@ -668,6 +609,7 @@ namespace Afx.Data
         /// </summary>
         /// <returns></returns>
         protected abstract ITableSchema GeTableSchema();
+
 
         /// <summary>
         /// 更新表结构，不存在创建，存在添加不存在列
@@ -771,8 +713,6 @@ namespace Afx.Data
                 this.Log = null;
                 if(this.commitCallbackList != null) this.commitCallbackList.Clear();
                 this.commitCallbackList = null;
-                if (this.commitCallbackAsyncList != null) this.commitCallbackAsyncList.Clear();
-                this.commitCallbackAsyncList = null;
                 this.Log = null;
                 this.CommitCallbackError = null;
 

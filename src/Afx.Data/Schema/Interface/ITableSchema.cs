@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -24,12 +23,13 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="columns">列信息</param>
         /// <returns>是否创建成功</returns>
-         Task<bool> CreateTable(string table, List<ColumnInfoModel> columns);
-        /// <summary>
-        /// 获取表列信息
-        /// </summary>
-        /// <param name="table">表名</param>
-        /// <returns>列信息</returns>
+        bool CreateTable(string table, List<ColumnInfoModel> columns);
+
+            /// <summary>
+            /// 获取表列信息
+            /// </summary>
+            /// <param name="table">表名</param>
+            /// <returns>列信息</returns>
         List<ColumnInfoModel> GetTableColumns(string table);
 
         /// <summary>
@@ -38,14 +38,14 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="column">列信息</param>
         /// <returns>是否添加成功</returns>
-        Task<bool> AddColumn(string table, ColumnInfoModel column);
+        bool AddColumn(string table, ColumnInfoModel column);
 
         /// <summary>
         /// 添加索引
         /// </summary>
         /// <param name="table">表名</param>
         /// <param name="indexs">索引列</param>
-        Task AddIndex(string table, List<IndexModel> indexs);
+        void AddIndex(string table, List<IndexModel> indexs);
 
         /// <summary>
         /// 添加索引
@@ -53,7 +53,7 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="index">索引列</param>
         /// <returns>是否添加成功</returns>
-        Task<bool> AddIndex(string table, IndexModel index);
+        bool AddIndex(string table, IndexModel index);
 
         /// <summary>
         /// 添加索引
@@ -63,7 +63,7 @@ namespace Afx.Data.Schema
         /// <param name="isUnique">是否唯一索引</param>
         /// <param name="columns">索引列</param>
         /// <returns>是否添加成功</returns>
-        Task<bool> AddIndex(string table, string indexName, bool isUnique, List<string> columns);
+        bool AddIndex(string table, string indexName, bool isUnique, List<string> columns);
 
         /// <summary>
         /// 删除索引
@@ -71,7 +71,7 @@ namespace Afx.Data.Schema
         /// <param name="table">表名</param>
         /// <param name="index">索引名称</param>
         /// <returns></returns>
-        Task<bool> DeleteIndex(string table, string index);
+        bool DeleteIndex(string table, string index);
 
         /// <summary>
         /// 获取表名

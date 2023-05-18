@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -51,23 +50,24 @@ namespace Afx.Data.Schema
         /// 创建数据库
         /// </summary>
         /// <returns>true：创建成功，false：创建失败</returns>
-        public override async Task<bool> CreateDatabase()
+        public override bool CreateDatabase()
         {
             var sql = string.Format("CREATE DATABASE `{0}` CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;",
                 this.database);
+            int count = this.db.ExecuteNonQuery(sql);
 
-            int count = await this.db.ExecuteNonQuery(sql);
             return count > 0;
         }
         /// <summary>
         /// 删除数据库
         /// </summary>
         /// <returns>true：删除成功，false：删除失败</returns>
-        public override async Task<bool> DeleteDatabase()
+        public override bool DeleteDatabase()
         {
             var sql = string.Format("DROP DATABASE `{0}`;",
                 this.database);
-            int count = await this.db.ExecuteNonQuery(sql);
+            int count = this.db.ExecuteNonQuery(sql);
+
             return count > 0;
         }
 

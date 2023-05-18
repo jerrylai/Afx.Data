@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
-using System.Threading.Tasks;
 
 namespace Afx.Data
 {
@@ -71,24 +69,6 @@ namespace Afx.Data
         /// <param name="action">需要执行的action</param>
         /// <returns>移除成功返回true</returns>
         bool RemoveCommitCallback(Action<IDatabase> action);
-        /// <summary>
-        ///  commit or SaveChanges 成功之后执行action list
-        /// </summary>
-        List<Func<IDatabase, Task>> CommitCallbackAsyncList { get; }
-        /// <summary>
-        /// 添加 commit or SaveChanges 成功之后执行action
-        /// action 只执行一次
-        /// </summary>
-        /// <param name="action">需要执行的action</param>
-        /// <returns>添加成功，返回所在的位置</returns>
-        int AddCommitCallback(Func<IDatabase, Task> action);
-
-        /// <summary>
-        /// 移除commit or SaveChanges 成功之后执行action
-        /// </summary>
-        /// <param name="action">需要执行的action</param>
-        /// <returns>移除成功返回true</returns>
-        bool RemoveCommitCallback(Func<IDatabase, Task> action);
 
         /// <summary>
         /// 移除所有action
@@ -168,7 +148,7 @@ namespace Afx.Data
         /// <summary>
         /// 提交事务
         /// </summary>
-        Task Commit();
+        void Commit();
 
         /// <summary>
         /// 回滚事务
@@ -194,8 +174,7 @@ namespace Afx.Data
         /// <param name="param">sql参数，model or dictionary string object or IEnumerable&lt;DbParameter&gt; or IEnumerable&lt;IDataParameter&gt;</param>
         /// <param name="commandType"></param>
         /// <returns></returns>
-        Task<int> ExecuteNonQuery(string sql, object param = null, CommandType? commandType = null);
-
+        int ExecuteNonQuery(string sql, object param = null, CommandType? commandType = null);
 
         /// <summary>
         /// 执行sql，返回第一行的第一列
@@ -254,7 +233,7 @@ namespace Afx.Data
         /// <param name="m">参数</param>
         /// <param name="ignore">忽略插入列</param>
         /// <returns></returns>
-        Task<int> Add<T>(T m, params string[] ignore) where T : class;
+        int Add<T>(T m, params string[] ignore) where T : class;
 
         /// <summary>
         /// 添加数据
@@ -262,11 +241,11 @@ namespace Afx.Data
         /// <param name="table">插入表</param>
         /// <param name="param"></param>
         /// <returns></returns>
-        Task<int> Add(string table, object param);
+        int Add(string table, object param);
 
-        #endregion
+#endregion
 
-        #region update
+#region update
 
         /// <summary>
         /// 更新数据
@@ -275,7 +254,7 @@ namespace Afx.Data
         /// <param name="setParam">set 参数</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Update(string table, object setParam, object whereParam);
+        int Update(string table, object setParam, object whereParam);
 
         /// <summary>
         /// 更新数据
@@ -284,7 +263,7 @@ namespace Afx.Data
         /// <param name="setParam">set 参数</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Update<T>(object setParam, object whereParam) where T : class;
+        int Update<T>(object setParam, object whereParam) where T : class;
 
         /// <summary>
         /// 更新数据
@@ -294,7 +273,8 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Update(string table, object setParam, string whereSql, object whereParam);
+        int Update(string table, object setParam, string whereSql, object whereParam);
+
         /// <summary>
         /// 更新数据
         /// </summary>
@@ -303,7 +283,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Update<T>(object setParam, string whereSql, object whereParam) where T : class;
+        int Update<T>(object setParam, string whereSql, object whereParam) where T : class;
 
         /// <summary>
         /// 更新数据
@@ -314,7 +294,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Update(string table, string setSql, object setParam, string whereSql, object whereParam);
+        int Update(string table, string setSql, object setParam, string whereSql, object whereParam);
 
         /// <summary>
         /// 更新数据
@@ -325,11 +305,11 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Update<T>(string setSql, object setParam, string whereSql, object whereParam) where T : class;
+        int Update<T>(string setSql, object setParam, string whereSql, object whereParam) where T : class;
 
-        #endregion
+#endregion
 
-        #region delete
+#region delete
 
         /// <summary>
         /// 删除数据
@@ -337,7 +317,7 @@ namespace Afx.Data
         /// <param name="table">数据表</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Delete(string table, object whereParam);
+        int Delete(string table, object whereParam);
 
         /// <summary>
         /// 删除数据
@@ -345,7 +325,7 @@ namespace Afx.Data
         /// <typeparam name="T">数据表</typeparam>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Delete<T>(object whereParam) where T : class;
+        int Delete<T>(object whereParam) where T : class;
 
         /// <summary>
         /// 删除数据
@@ -354,7 +334,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Delete(string table, string whereSql, object whereParam);
+        int Delete(string table, string whereSql, object whereParam);
 
         /// <summary>
         /// 删除数据
@@ -363,7 +343,7 @@ namespace Afx.Data
         /// <param name="whereSql">where sql</param>
         /// <param name="whereParam">where参数</param>
         /// <returns></returns>
-        Task<int> Delete<T>(string whereSql, object whereParam) where T : class;
+        int Delete<T>(string whereSql, object whereParam) where T : class;
 
         #endregion
 

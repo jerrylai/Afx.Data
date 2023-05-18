@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Afx.Data.Schema
 {
@@ -50,7 +49,7 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
         /// </summary>
         /// <param name="table">表名</param>
         /// <param name="indexs">索引列信息</param>
-        public override async Task AddIndex(string table, List<IndexModel> indexs)
+        public override void AddIndex(string table, List<IndexModel> indexs)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (indexs == null) throw new ArgumentNullException("indexs");
@@ -67,7 +66,7 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
                     {
                         columnList.Add(m.ColumnName);
                     }
-                    await this.AddIndex(table, indexName, isUnique, columnList);
+                    this.AddIndex(table, indexName, isUnique, columnList);
                 }
             }
         }
@@ -77,7 +76,7 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
         /// <param name="table">表名</param>
         /// <param name="columns">列信息</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> CreateTable(string table, List<ColumnInfoModel> columns)
+        public override bool CreateTable(string table, List<ColumnInfoModel> columns)
         {
             if (table == null || string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (columns == null) throw new ArgumentNullException("columns");
@@ -111,17 +110,16 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
                 createKeySql.Remove(createKeySql.Length - 1, 1);
                 createKeySql.Append(") WITH(STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]");
             }
-            count = await this.db.ExecuteNonQuery(createTableSql.ToString());
+
+            count = this.db.ExecuteNonQuery(createTableSql.ToString());
             createTableSql.Clear();
             if (createKeySql.Length > 0)
             {
-                await this.db.ExecuteNonQuery(createKeySql.ToString());
+                this.db.ExecuteNonQuery(createKeySql.ToString());
             }
 
-            if (indexs.Count > 0)
-            {
-               await  this.AddIndex(table, indexs);
-            }
+            if (indexs.Count > 0) this.AddIndex(table, indexs);
+
 
             return count > 0;
         }
@@ -132,13 +130,13 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
         /// <param name="table">表名</param>
         /// <param name="column">列信息</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> AddColumn(string table, ColumnInfoModel column)
+        public override bool AddColumn(string table, ColumnInfoModel column)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (column == null) throw new ArgumentNullException("column");
 
             var sql = string.Format(AddColumnSql, table, column.Name, column.DataType, column.IsNullable ? "" : "NOT");
-            int count = await this.db.ExecuteNonQuery(sql);
+            int count = this.db.ExecuteNonQuery(sql);
 
             return count > 0;
         }
@@ -150,7 +148,7 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
         /// <param name="isUnique">是否唯一索引</param>
         /// <param name="columns">列名</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> AddIndex(string table, string indexName, bool isUnique, List<string> columns)
+        public override bool AddIndex(string table, string indexName, bool isUnique, List<string> columns)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (string.IsNullOrEmpty(indexName)) throw new ArgumentNullException("indexName");
@@ -165,8 +163,7 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
 
             var sql = string.Format(AddIndexSql, isUnique ? "UNIQUE" : "", indexName,
                 table, strColumns.ToString());
-
-            int count = await this.db.ExecuteNonQuery(sql);
+            int count = this.db.ExecuteNonQuery(sql);
 
             return count > 0;
         }
@@ -176,7 +173,7 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
         /// <param name="table">表名</param>
         /// <param name="index">索引列信息</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> AddIndex(string table, IndexModel index)
+        public override bool AddIndex(string table, IndexModel index)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (index == null) throw new ArgumentNullException("index");
@@ -184,8 +181,7 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
             if (!string.IsNullOrEmpty(index.Name) && !string.IsNullOrEmpty(index.ColumnName))
             {
                 var sql = string.Format(AddIndexSql, index.IsUnique ? "UNIQUE" : "", index.Name, table, "[" + index.ColumnName + "]");
-
-                count = await this.db.ExecuteNonQuery(sql);
+                count = this.db.ExecuteNonQuery(sql);
             }
 
             return count > 0;
@@ -197,16 +193,14 @@ WHERE t.TABLE_CATALOG = @database AND t.TABLE_TYPE='BASE TABLE'";
         /// <param name="table">表名</param>
         /// <param name="index">索引名称</param>
         /// <returns>是否成功</returns>
-        public override async Task<bool> DeleteIndex(string table, string index)
+        public override bool DeleteIndex(string table, string index)
         {
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
             if (string.IsNullOrEmpty(index)) throw new ArgumentNullException("index");
 
             int count = 0;
             var sql = string.Format(DeleteIndexSql, index, table);
-            try {
-                count = await this.db.ExecuteNonQuery(sql);
-            }
+            try { count = this.db.ExecuteNonQuery(sql); }
             catch { }
 
             return count > 0;
