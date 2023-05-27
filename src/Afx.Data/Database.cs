@@ -289,7 +289,7 @@ namespace Afx.Data
         /// <summary>
         /// 是否开启事务
         /// </summary>
-        public bool IsTransaction
+        public virtual bool IsTransaction
         {
             get { return null != this.transaction; }
         }
@@ -297,7 +297,7 @@ namespace Afx.Data
         /// <summary>
         /// 开启事务
         /// </summary>
-        public IDisposable BeginTransaction()
+        public virtual IDisposable BeginTransaction()
         {
             if (null != this.transaction) throw new InvalidOperationException("事务已开启，不能重复开启！");
             if (this.connection.State != ConnectionState.Open) this.Open();
@@ -312,7 +312,7 @@ namespace Afx.Data
         /// 开启事务
         /// </summary>
         /// <param name="isolationLevel">事务级别</param>
-        public IDisposable BeginTransaction(IsolationLevel isolationLevel)
+        public virtual IDisposable BeginTransaction(IsolationLevel isolationLevel)
         {
             if (null != this.transaction) throw new InvalidOperationException("已开启事务，不能重复开启！");
             if (this.connection.State != ConnectionState.Open) this.Open();
@@ -326,7 +326,7 @@ namespace Afx.Data
         /// <summary>
         /// 提交事务
         /// </summary>
-        public void Commit()
+        public virtual void Commit()
         {
             if (null == this.transaction) throw new InvalidOperationException("未开启事务，不能提交！");
             this.transaction.Commit();
@@ -340,7 +340,7 @@ namespace Afx.Data
         /// <summary>
         /// 回滚事务
         /// </summary>
-        public void Rollback()
+        public virtual void Rollback()
         {
             if (null != this.transaction)
             {
