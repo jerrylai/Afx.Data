@@ -25,6 +25,7 @@ namespace Afx.Data.Schema
             if (string.IsNullOrEmpty(database)) throw new ArgumentNullException("database is null!");
             this.database = database;
             this.db = db;
+            db.OpenKeepConnection();
         }
         /// <summary>
         /// 
@@ -126,6 +127,7 @@ namespace Afx.Data.Schema
 
             var sql = string.Format("ALTER TABLE `{0}` ADD COLUMN `{1}` {2} {3} NULL;",
                 table, column.Name, column.DataType, column.IsNullable ? "" : "NOT");
+
             int count = this.db.ExecuteNonQuery(sql);
 
             return count > 0;
@@ -155,6 +157,7 @@ namespace Afx.Data.Schema
 
             var sql = string.Format("ALTER TABLE `{0}` ADD {1} INDEX `{2}` ({3});",
                 table, isUnique ? "UNIQUE" : "", indexName, strColumns.ToString());
+
             int count = this.db.ExecuteNonQuery(sql);
 
             return count > 0;
@@ -172,6 +175,7 @@ namespace Afx.Data.Schema
             {
                 var sql = string.Format("ALTER TABLE `{0}` ADD {1} INDEX `{2}` (`{3}`);",
                     table, index.IsUnique ? "UNIQUE" : "", index.Name, index.ColumnName);
+
                 count = this.db.ExecuteNonQuery(sql);
             }
 
@@ -188,6 +192,7 @@ namespace Afx.Data.Schema
         {
             int count = 0;
             var sql = string.Format("DROP INDEX `{0}` ON `{1}`", index, table);
+
             try { count = this.db.ExecuteNonQuery(sql); }
             catch { }
 
