@@ -231,23 +231,23 @@ namespace Afx.Data.Schema
                         m.IsNullable = false;
                     }
                 }
+            }
 
-                atts = property.GetCustomAttributes(typeof(IndexAttribute), false);
-                if (atts != null && atts.Length > 0)
+            atts = property.GetCustomAttributes(typeof(IndexAttribute), false);
+            if (atts != null && atts.Length > 0)
+            {
+                m.Indexs = new List<IndexModel>(atts.Length);
+                foreach (var o in atts)
                 {
-                    m.Indexs = new List<IndexModel>(atts.Length);
-                    foreach (var o in atts)
-                    {
-                        var att = o as IndexAttribute;
-                        var index = new IndexModel();
-                        m.Indexs.Add(index);
-                        index.ColumnName = m.Name;
-                        index.IsUnique = att.IsUnique;
-                        if (!string.IsNullOrEmpty(att.Name))
-                            index.Name = att.Name;
-                        else
-                            m.Name = string.Format("IX_{0}_{1}", table, m.Name);
-                    }
+                    var att = o as IndexAttribute;
+                    var index = new IndexModel();
+                    m.Indexs.Add(index);
+                    index.ColumnName = m.Name;
+                    index.IsUnique = att.IsUnique;
+                    if (!string.IsNullOrEmpty(att.Name))
+                        index.Name = att.Name;
+                    else
+                        m.Name = string.Format("IX_{0}_{1}", table, m.Name);
                 }
             }
 
