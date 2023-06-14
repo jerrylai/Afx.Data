@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Reflection;
 using System.Text;
@@ -63,10 +64,22 @@ namespace Afx.Data
                             var parameter = command.CreateParameter();
                             parameter.ParameterName = pname;
                             parameter.Value = v ?? DBNull.Value;
-                            if (p.PropertyType.IsEnum) parameter.Value = (int)v;
-                            DbType dbType;
-                            if (ModelMaping.dbTypeDic.TryGetValue(p.PropertyType, out dbType))
-                                parameter.DbType = dbType;
+                            if(parameter.Value == null && p.PropertyType == typeof(string))
+                            {
+                                var atts = p.GetCustomAttributes(typeof(RequiredAttribute), false);
+                                if (atts != null && atts.Length > 0) parameter.Value = string.Empty;
+                            }
+                            if (p.PropertyType.IsEnum)
+                            {
+                                parameter.Value = (int)v;
+                                parameter.DbType = DbType.Int32;
+                            }
+                            else
+                            {
+                                DbType dbType;
+                                if (ModelMaping.dbTypeDic.TryGetValue(p.PropertyType, out dbType))
+                                    parameter.DbType = dbType;
+                            }
                             command.Parameters.Add(parameter);
                         }
                     }
@@ -131,10 +144,17 @@ namespace Afx.Data
                         parameter.Value = kv.Value ?? DBNull.Value;
                         Type kt = null;
                         if (kv.Value != null) kt = kv.Value.GetType();
-                        if (kt != null && kt.IsEnum) parameter.Value = (int)kv.Value;
-                        DbType dbType;
-                        if (kt != null && ModelMaping.dbTypeDic.TryGetValue(kt, out dbType))
-                            parameter.DbType = dbType;
+                        if (kt != null && kt.IsEnum)
+                        {
+                            parameter.Value = (int)kv.Value;
+                            parameter.DbType = DbType.Int32;
+                        }
+                        else
+                        {
+                            DbType dbType;
+                            if (kt != null && ModelMaping.dbTypeDic.TryGetValue(kt, out dbType))
+                                parameter.DbType = dbType;
+                        }
                         command.Parameters.Add(parameter);
                     }
                 }
