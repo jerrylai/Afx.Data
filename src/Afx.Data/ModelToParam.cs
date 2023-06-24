@@ -64,7 +64,7 @@ namespace Afx.Data
                             var parameter = command.CreateParameter();
                             parameter.ParameterName = pname;
                             parameter.Value = v ?? DBNull.Value;
-                            if(parameter.Value == null && p.PropertyType == typeof(string))
+                            if(v == null && p.PropertyType == typeof(string))
                             {
                                 var atts = p.GetCustomAttributes(typeof(RequiredAttribute), false);
                                 if (atts != null && atts.Length > 0) parameter.Value = string.Empty;
