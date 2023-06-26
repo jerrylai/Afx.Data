@@ -3,7 +3,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Description>Afx.Data for .NET 6.0</Description>
     <PackageReleaseNotes>Afx.Data for .NET 6.0</PackageReleaseNotes>
-    <Version>11.2.6</Version>
+    <Version>11.2.7</Version>
     <Authors>jerrylai@aliyun.com</Authors>
     <Company>mycsv.cn</Company>
     <Copyright>Copyright © mycsv 2018</Copyright>

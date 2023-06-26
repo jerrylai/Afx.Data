@@ -69,6 +69,11 @@ namespace Afx.Data
                                 var atts = p.GetCustomAttributes(typeof(RequiredAttribute), false);
                                 if (atts != null && atts.Length > 0) parameter.Value = string.Empty;
                             }
+                            else if(p.PropertyType == typeof(DateTime) && ((DateTime)v) == DateTime.MinValue)
+                            {
+                                parameter.Value = DateTime.Now;
+                            }
+
                             if (p.PropertyType.IsEnum)
                             {
                                 parameter.Value = (int)v;
@@ -142,6 +147,10 @@ namespace Afx.Data
                         var parameter = command.CreateParameter();
                         parameter.ParameterName = pname;
                         parameter.Value = kv.Value ?? DBNull.Value;
+                        if ((kv.Value is DateTime) && ((DateTime)kv.Value) == DateTime.MinValue)
+                        {
+                            parameter.Value = DateTime.Now;
+                        }
                         Type kt = null;
                         if (kv.Value != null) kt = kv.Value.GetType();
                         if (kt != null && kt.IsEnum)
