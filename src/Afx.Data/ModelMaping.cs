@@ -4,6 +4,7 @@ using System.Data;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Collections.Concurrent;
+using System.Linq;
 
 namespace Afx.Data
 {
@@ -222,7 +223,7 @@ namespace Afx.Data
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Call, typeof(ReaderToModel).GetMethod("SetOrdinal", new Type[] { typeof(IDataReader) }));
-            var parr = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var parr = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite).ToArray();
 
             foreach (var p in parr)
             {

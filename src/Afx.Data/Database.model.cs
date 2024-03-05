@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -30,14 +31,14 @@ namespace Afx.Data
         protected virtual string GetSelectSqlByDic<T>(Dictionary<string, object> whereDic) where T : class
         {
             var t = typeof(T);
-            var tps = t.GetProperties();
+            var tps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite).ToArray();
             if (tps == null || tps.Length == 0) throw new ArgumentException($"T({t.FullName}) is error!");
 
             StringBuilder sql = new StringBuilder();
             sql.Append("SELECT");
             foreach (var p in tps)
             {
-                sql.Append($" {this.EncodeColumn(p.Name)},");
+               sql.Append($" {this.EncodeColumn(p.Name)},");
             }
             sql.Remove(sql.Length - 1, 1);
             sql.Append($" FROM {this.EncodeColumn(t.Name)}");
@@ -77,7 +78,7 @@ namespace Afx.Data
 
             StringBuilder sql = new StringBuilder();
             sql.Append(GetSelectSqlByDic<T>(null));
-            var wpps = wpt.GetProperties();
+            var wpps = wpt.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead).ToArray();
             if (wpps != null && wpps.Length > 0)
             {
                 sql.Append(" WHERE");
@@ -226,7 +227,7 @@ namespace Afx.Data
             if (m == null) throw new ArgumentNullException(nameof(m));
             var t = typeof(T);
             if (t.IsGenericType || t.IsArray) throw new ArgumentException($"T({t.FullName}) is error!");
-            var ps = new List<PropertyInfo>(t.GetProperties());
+            var ps = new List<PropertyInfo>(t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p=>p.CanWrite && p.CanRead));
             if(ignore != null && ignore.Length > 0)
             {
                 var wlist = new List<string>(ignore);
@@ -260,7 +261,7 @@ namespace Afx.Data
             {
                 var pt = param.GetType();
                 if (!CheckParamType(pt)) throw new ArgumentException($"{nameof(param)}({pt.FullName}) is error!");
-                var pps = new List<PropertyInfo>(pt.GetProperties());
+                var pps = new List<PropertyInfo>(pt.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead));
                 if (pps.Count == 0) throw new ArgumentException($"{nameof(param)} is error!");
                 sql = this.GetInsertSql(table, pps);
             }
@@ -318,7 +319,7 @@ namespace Afx.Data
 
             var spt = setParam.GetType();
             if (!CheckParamType(spt)) throw new ArgumentException($"{nameof(setParam)}({spt.FullName}) is error!");
-            var spps = spt.GetProperties();
+            var spps = spt.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead).ToArray();
             if (spps.Length == 0) throw new ArgumentException($"{nameof(setParam)} is error!");
 
             var sql = new StringBuilder();
@@ -383,7 +384,7 @@ namespace Afx.Data
 
             var t = whereParam.GetType();
             if (!CheckParamType(t)) throw new ArgumentException($"{nameof(whereParam)}({t.FullName}) is error!");
-            var ps = t.GetProperties();
+            var ps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead).ToArray();
             if (ps == null || ps.Length == 0) return string.Empty;
 
             var sql = new StringBuilder();
@@ -488,7 +489,7 @@ namespace Afx.Data
                 {
                     var t = whereParam.GetType();
                     if (!CheckParamType(t)) throw new ArgumentException($"{nameof(whereParam)}({t.FullName}) is error!");
-                    var ps = t.GetProperties();
+                    var ps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead).ToArray();
                     if (ps != null && ps.Length > 0)
                     {
                         if (allParamDic == null) allParamDic = new Dictionary<string, object>();
@@ -555,7 +556,7 @@ namespace Afx.Data
                 {
                     var t = setParam.GetType();
                     if (!CheckParamType(t)) throw new ArgumentException($"{nameof(setParam)}({t.FullName}) is error!");
-                    var ps = t.GetProperties();
+                    var ps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead).ToArray();
                     if (ps != null && ps.Length > 0)
                     {
                         if (allParamDic == null) allParamDic = new Dictionary<string, object>();
@@ -587,7 +588,7 @@ namespace Afx.Data
                 {
                     var t = whereParam.GetType();
                     if (!CheckParamType(t)) throw new ArgumentException($"{nameof(whereParam)}({t.FullName}) is error!");
-                    var ps = t.GetProperties();
+                    var ps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead).ToArray();
                     if (ps != null && ps.Length > 0)
                     {
                         if (allParamDic == null) allParamDic = new Dictionary<string, object>();
@@ -657,7 +658,7 @@ namespace Afx.Data
                 {
                     var t = whereParam.GetType();
                     if (!CheckParamType(t)) throw new ArgumentException($"{nameof(whereParam)}({t.FullName}) is error!");
-                    var ps = t.GetProperties();
+                    var ps = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead).ToArray();
                     if (ps != null && ps.Length > 0)
                     {
                         sql.Append(" WHERE");
@@ -816,7 +817,7 @@ namespace Afx.Data
         {
             var t = typeof(T);
             if (t.IsGenericType || t.IsArray) throw new ArgumentException($"T({t.FullName}) is error!");
-            var propertyInfos = new List<PropertyInfo>(t.GetProperties());
+            var propertyInfos = new List<PropertyInfo>(t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p => p.CanRead && p.CanWrite));
             if ((!string.IsNullOrEmpty(orderby) || !string.IsNullOrEmpty(defaultOrderby))
                 && (propertyInfos == null || propertyInfos.Count == 0))
                 throw new ArgumentException($"T({t.FullName}) is error!");

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Afx.Data.DataAnnotations;
 using IndexAttribute = Afx.Data.DataAnnotations.IndexAttribute;
+using System.Linq;
 
 namespace Afx.Data.Schema
 {
@@ -108,7 +109,7 @@ namespace Afx.Data.Schema
             if (modelType == null) throw new ArgumentNullException("modelType");
             if (!modelType.IsClass || modelType.IsAbstract) throw new ArgumentException($"T({modelType.FullName}) is error!");
             if (string.IsNullOrEmpty(table)) throw new ArgumentNullException("table");
-            var propertys = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var propertys = modelType.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p=>p.CanRead && p.CanWrite).ToArray();
             List<ColumnInfoModel> list = new List<ColumnInfoModel>(propertys != null ? propertys.Length : 0);
             if (propertys != null && propertys.Length > 0)
             {

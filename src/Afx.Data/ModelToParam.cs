@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -28,7 +29,7 @@ namespace Afx.Data
                 var t = parameters.GetType();
                 if (t.IsClass)
                 {
-                    var parr = t.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.GetProperty);
+                    var parr = t.GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(p=>p.CanRead).ToArray();
                     StringBuilder stringBuilder = new StringBuilder();
                     foreach (var p in parr)
                     {
