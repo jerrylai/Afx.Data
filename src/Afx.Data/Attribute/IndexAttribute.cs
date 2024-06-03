@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Afx.Data.DataAnnotations
 {
     /// <summary>
     /// 索引 Attribute
     /// </summary>
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple=false)]
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field, AllowMultiple=true)]
     public class IndexAttribute : Attribute
     {
         /// <summary>

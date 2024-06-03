@@ -242,13 +242,14 @@ namespace Afx.Data.Schema
                 {
                     var att = o as IndexAttribute;
                     var index = new IndexModel();
-                    m.Indexs.Add(index);
                     index.ColumnName = m.Name;
                     index.IsUnique = att.IsUnique;
                     if (!string.IsNullOrEmpty(att.Name))
                         index.Name = att.Name;
                     else
                         m.Name = string.Format("IX_{0}_{1}", table, m.Name);
+                   if(!m.Indexs.Exists(q=>q.ColumnName == m.Name && q.Name == index.Name)) 
+                        m.Indexs.Add(index);
                 }
             }
 
